@@ -9,19 +9,21 @@ const styles = StyleSheet.create({
   },
 });
 
+function calculateValueNeedAlongTime(src: number) {
+  //実行時間が長い処理
+}
+
 export default function App() {
-  const [count1, setCount1] = React.useState(0);
-  const countUp1 = React.useCallback(() => {
-    setCount1(count1 + 1);
-  }, [count1]);
-  const [count2, setCount2] = React.useState(0);
-  const countUp2 = React.useCallback(() => {
-    setCount2(count2 + 1);
-  }, [count2])
+  const [state, setState] = React.useState(true);
+  const update = React.useCallback(() => {
+    setState(!state);
+  }, [state]);
+  const value = React.useMemo(() => calculateValueNeedAlongTime(0xffff), []);
+  
   return (
     <View style={styles.container}>
-      <Text onPress={countUp1}>{count1}</Text>
-      <Text onPress={countUp2}>{count2}</Text>
+      <Text onPress={update}>update {state.toString()}</Text>
+      <Text>{value}</Text>
     </View>
   );
 }
