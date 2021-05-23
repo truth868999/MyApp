@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,30 +13,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const {width: screenWidth} = Dimensions.get('screen');
+const MSEC_IN_FRAME = 1000 / 60;
 
 export default function App() {
-  const [width, setWidth] = React.useState(1);
+  const [width] = React.useState(new Animated.Value(0));
   React.useEffect(() => {
-    const id = setInterval(() => {
-      if (width < screenWidth - 64) {
-        console.log(width + "前");
-        setWidth(width + 1);
-        console.log(width + "あと");
-      } else {
-        clearInterval(id);
-        console.log(width + "elseのあと");
-      }
-    }, 1000 / 60);
-    return () => {
-      clearInterval(id);
-    };
-  },[]);
+    Animated.timing(width, {
+      toValue: 350,
+      duration: MSEC_IN_FRAME * 350,
+    }).start();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={[styles.block, {width}]} />
+      <Animated.View style={[styles.block, {width}]} />
     </View>
   );
 }
-
