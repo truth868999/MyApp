@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
-import Progress from './Progress';
+import { View, StyleSheet, Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,25 +7,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  progress: {
-    width: 256,
-  },
-  button: {
-    marginTop: 8,
+  block: {
+    backgroundColor: 'black',
+    height: 32,
   },
 });
 
+const {width: screenWidth} = Dimensions.get('screen');
+
 export default function App() {
-  const [progress, setProgress] = React.useState(Math.random());
-  const updateProgress = React.useCallback(() => {
-    setProgress(Math.random());
-  }, []);
+  const [width, setWidth] = React.useState(1);
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      if (width < screenWidth - 64) {
+        console.log(width + "前");
+        setWidth(width + 1);
+        console.log(width + "あと");
+      } else {
+        clearInterval(id);
+        console.log(width + "elseのあと");
+      }
+    }, 1000 / 60);
+    return () => {
+      clearInterval(id);
+    };
+  },[]);
+
   return (
     <View style={styles.container}>
-      <Progress progress={progress} style={styles.progress} color={'red'} />
-      <TouchableOpacity onPress={updateProgress} style={styles.button}>
-        <Text>Update</Text>
-      </TouchableOpacity>
+      <View style={[styles.block, {width}]} />
     </View>
   );
 }
