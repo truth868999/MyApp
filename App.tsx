@@ -1,32 +1,36 @@
 import React from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { Animated, ViewStyle } from 'react-native';
+import {ProgressView} from "@react-native-community/progress-view";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  block: {
-    backgroundColor: 'black',
-    height: 32,
-  },
-});
+interface Props {
+  progress: number;
+  color: string;
+  style: ViewStyle;
+}
 
-const MSEC_IN_FRAME = 1000 / 60;
+const AnimatedProgressView = Animated.createAnimatedComponent(
+  ProgressView,
+);
 
-export default function App() {
-  const [width] = React.useState(new Animated.Value(0));
+export default function Progress(props: Props) {
+  const [progress] = React.useState(new Animated.Value(0));
+
   React.useEffect(() => {
-    Animated.timing(width, {
-      toValue: 350,
-      duration: MSEC_IN_FRAME * 350,
+    Animated.spring(progress, {
+      toValue: props.progress,
+      friction: 4,
     }).start();
-  }, []);
+  }, [props.progress]);
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.block, {width}]} />
-    </View>
+    <AnimatedProgressView
+      progress={progress}
+      style={props.style}
+      progressTintColor={props.color}
+    />
   );
 }
+
+Progress.defaultProps = {
+  color: '#0a7ffb',
+};
